@@ -1,0 +1,56 @@
+{% extends 'todo/layout.html'%}
+{% block content %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+
+<div style="margin-top: 50px;" class="ui container">
+
+    <h1 class="ui center aligned header green">{{ app_name }}</h1>
+
+    <form class="ui form" action="{{ url_for('add') }}" method="post">
+        
+        <h3 class="test_css">Оптимизируй своё время</h3>
+        <div class="field">
+            <label>Новая задача</label>
+            <input type="text" name="title" placeholder="Введите название задачи"><br>
+            <input type="datetime-local" name="finish_time" placeholder="Срок дата" class="flatpickr" required>
+        </div>
+        <button class="ui teal basic button" type="submit">Добавить</button>
+    </form>
+
+
+    {% for todo in todo_list %}
+    <div class="ui segment">
+        <p class="ui big header">№{{ todo.id }} {{ todo.title }}</p>
+        <p class="ui big header">{{todo.created_at}}</p>
+        <p class="ui big header">{{todo.finish_time}}</p>
+
+        {% if todo.is_complete == False %}
+        <span class="ui gray label">Не завершено</span>
+        <a class="ui primary basic button" href="{{ url_for('update', todo_id=todo.id) }}">Выполнен</a>
+        {% else %}
+        <span class="ui green label">Завершено</span>
+        <a class="ui blue button" href="{{ url_for('update', todo_id=todo.id) }}">Открыть</a>
+        <a class="ui negative basic button" href="{{ url_for('delete', todo_id=todo.id) }}">Удалить</a>
+        {% endif %}
+    </div>
+    {% endfor %}
+</div>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        flatpickr('.flatpickr');
+    });
+</script>
+<!-- <script>
+    function formatDatetime() {
+        // Get the datetime input element
+        var datetimeInput = document.getElementById('finish_time');
+        // Get the datetime value
+        var datetimeValue = datetimeInput.value;
+        // Convert datetime string to YYYY-MM-DD HH:MM:SS format
+        var formattedDatetime = datetimeValue.replace('T', ' ').slice(0, -3) + ":00";
+        // Set the formatted datetime back to the input element
+        datetimeInput.value = formattedDatetime;
+    }
+</script> -->
+{% endblock %}
